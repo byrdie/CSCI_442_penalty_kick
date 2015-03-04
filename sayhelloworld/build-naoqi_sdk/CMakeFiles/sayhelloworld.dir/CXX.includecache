@@ -32,38 +32,6 @@ string
 vector
 -
 
-/home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alproxies/altexttospeechproxy.h
-alproxies/altexttospeechproxyposthandler.h
--
-alproxies/api.h
--
-
-/home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alproxies/altexttospeechproxyposthandler.h
-boost/shared_ptr.hpp
--
-alvalue/alvalue.h
--
-string
--
-vector
--
-
-/home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alproxies/alvideodeviceproxy.h
-alproxies/alvideodeviceproxyposthandler.h
--
-alproxies/api.h
--
-
-/home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alproxies/alvideodeviceproxyposthandler.h
-boost/shared_ptr.hpp
--
-alvalue/alvalue.h
--
-string
--
-vector
--
-
 /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alproxies/api.h
 qi/macro.hpp
 -
@@ -79,22 +47,6 @@ alvalue/config.h
 -
 
 /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alvalue/config.h
-
-/home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alvision/alimage.h
-string
--
-iostream
--
-vector
--
-cassert
--
-alvision/alvisiondefinitions.h
--
-qi/os.hpp
--
-
-/home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alvision/alvisiondefinitions.h
 
 /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/boost/assert.hpp
 boost/current_function.hpp
@@ -2144,35 +2096,13 @@ cstddef
 boost/type_traits/detail/bool_trait_undef.hpp
 -
 
-/home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/qi/config.hpp
-qi/macro.hpp
--
-
 /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/qi/macro.hpp
-
-/home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/qi/os.hpp
-string
--
-map
--
-vector
--
-qi/config.hpp
--
 
 /home/byrdie/zach/CSCI_442_penalty_kick/sayhelloworld/sayhelloworld.cpp
 iostream
 -
 alerror/alerror.h
 -
-alproxies/altexttospeechproxy.h
--
 alproxies/alledsproxy.h
--
-alproxies/alvideodeviceproxy.h
--
-alvision/alimage.h
--
-alvision/alvisiondefinitions.h
 -
 

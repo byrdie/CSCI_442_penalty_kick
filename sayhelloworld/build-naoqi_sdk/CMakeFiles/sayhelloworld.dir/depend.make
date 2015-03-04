@@ -5,15 +5,9 @@ CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: /home/byrdie/school/CSCI442_Ro
 CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alerror/config.h
 CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alproxies/alledsproxy.h
 CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alproxies/alledsproxyposthandler.h
-CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alproxies/altexttospeechproxy.h
-CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alproxies/altexttospeechproxyposthandler.h
-CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alproxies/alvideodeviceproxy.h
-CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alproxies/alvideodeviceproxyposthandler.h
 CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alproxies/api.h
 CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alvalue/alvalue.h
 CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alvalue/config.h
-CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alvision/alimage.h
-CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alvision/alvisiondefinitions.h
 CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/boost/assert.hpp
 CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/boost/checked_delete.hpp
 CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/boost/config.hpp
@@ -245,8 +239,6 @@ CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: /home/byrdie/school/CSCI442_Ro
 CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/boost/type_traits/remove_cv.hpp
 CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/boost/type_traits/remove_reference.hpp
 CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/boost/type_traits/type_with_alignment.hpp
-CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/qi/config.hpp
 CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/qi/macro.hpp
-CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/qi/os.hpp
 CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o: ../sayhelloworld.cpp
 

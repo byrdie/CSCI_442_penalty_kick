@@ -1,21 +1,7 @@
- /**
- * Copyright (c) 2011 Aldebaran Robotics. All Rights Reserved
- * \file sayhelloworld.cpp
- * \brief Make NAO say a short phrase.
- *
- * A simple example showing how to make NAO say a short phrase using the
- * specialized proxy ALTextToSpeechProxy.
- */
-
 
 #include <iostream>
 #include <alerror/alerror.h>
-#include <alproxies/altexttospeechproxy.h>
 #include <alproxies/alledsproxy.h>
-//#include <alproxies/rightfaceledsproxy.h>
-#include <alproxies/alvideodeviceproxy.h>
-#include <alvision/alimage.h>
-#include <alvision/alvisiondefinitions.h>
 
 int main(int argc, char* argv[])
 {
@@ -25,24 +11,43 @@ int main(int argc, char* argv[])
     std::cerr << "Usage: say NAO_IP" << std::endl;
     exit(2);
   }
-
   /** The desired phrase to be said. */
-  const std::string phraseToSay = "Hello world";
+  //const std::string phraseToSay = "Hello world";
   try
   {
-    /** Create an ALTextToSpeechProxy so that we can call the say method
+    /** Create an ALLedsProxy for leds
     * Arguments for the constructor are:
     *  - IP of the robot
     *  - port on which NAOqi is listening. Default is 9559
     */
 
-    AL::ALTextToSpeechProxy tts(argv[1], 9559);
     AL::ALLedsProxy leds(argv[1], 9559);
 
-    std::string right  = "RightFaceLeds";
-    std::string left = "LeftFaceLeds";
+    std::string right  = "RightFaceLedsGreen";
+    std::string left = "LeftFaceLedsGreen";
     std::string both = "FaceLeds";
-    //leds.listGroup("RightFaceLeds");
+	int x = 0;
+	for(x = 0; x<4; x++) {
+		if(x == 0) { //ball moving to right
+			leds.on(right);
+			leds.off(left);
+			sleep(2);
+		}
+		else if(x == 1) { //ball moving to left
+			leds.on(left);
+			leds.off(right);
+			sleep(2);
+		}
+		else if(x == 2) { //ball coming to center
+			leds.on(both);
+			sleep(2);
+		}
+		else {
+			leds.off(both);
+			sleep(2);
+		}
+	}
+/*
     leds.off(right);
     leds.off(left);
     //leds.on(right);
@@ -51,11 +56,10 @@ int main(int argc, char* argv[])
 
     float duration = 3.0f;
     //leds.rasta(duration);
-
-    /** Call the say method */
-    //tts.say(phraseToSay);
+*/
     //rleds.rasta(duration);
   }
+
   catch (const AL::ALError& e)
   {
     std::cerr << "Caught exception: " << e.what() << std::endl;

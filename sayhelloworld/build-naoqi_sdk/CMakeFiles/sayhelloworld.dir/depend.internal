@@ -6,15 +6,9 @@ CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o
  /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alerror/config.h
  /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alproxies/alledsproxy.h
  /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alproxies/alledsproxyposthandler.h
- /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alproxies/altexttospeechproxy.h
- /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alproxies/altexttospeechproxyposthandler.h
- /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alproxies/alvideodeviceproxy.h
- /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alproxies/alvideodeviceproxyposthandler.h
  /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alproxies/api.h
  /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alvalue/alvalue.h
  /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alvalue/config.h
- /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alvision/alimage.h
- /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/alvision/alvisiondefinitions.h
  /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/boost/assert.hpp
  /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/boost/checked_delete.hpp
  /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/boost/config.hpp
@@ -246,7 +240,5 @@ CMakeFiles/sayhelloworld.dir/sayhelloworld.cpp.o
  /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/boost/type_traits/remove_cv.hpp
  /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/boost/type_traits/remove_reference.hpp
  /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/boost/type_traits/type_with_alignment.hpp
- /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/qi/config.hpp
  /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/qi/macro.hpp
- /home/byrdie/school/CSCI442_Robot_Vision/naoqi_c++/naoqi-sdk-1.14.5-linux64/include/qi/os.hpp
  /home/byrdie/zach/CSCI_442_penalty_kick/sayhelloworld/sayhelloworld.cpp
