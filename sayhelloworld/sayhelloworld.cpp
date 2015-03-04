@@ -12,6 +12,7 @@
 #include <alerror/alerror.h>
 #include <alproxies/altexttospeechproxy.h>
 #include <alproxies/alledsproxy.h>
+//#include <alproxies/rightfaceledsproxy.h>
 #include <alproxies/alvideodeviceproxy.h>
 #include <alvision/alimage.h>
 #include <alvision/alvisiondefinitions.h>
@@ -34,12 +35,26 @@ int main(int argc, char* argv[])
     *  - IP of the robot
     *  - port on which NAOqi is listening. Default is 9559
     */
+
     AL::ALTextToSpeechProxy tts(argv[1], 9559);
     AL::ALLedsProxy leds(argv[1], 9559);
+
+    std::string right  = "RightFaceLeds";
+    std::string left = "LeftFaceLeds";
+    std::string both = "FaceLeds";
+    //leds.listGroup("RightFaceLeds");
+    leds.off(right);
+    leds.off(left);
+    //leds.on(right);
+    //leds.on(left);
+    leds.on(both);
+
     float duration = 3.0f;
-    leds.rasta(duration);
+    //leds.rasta(duration);
+
     /** Call the say method */
-    tts.say(phraseToSay);
+    //tts.say(phraseToSay);
+    //rleds.rasta(duration);
   }
   catch (const AL::ALError& e)
   {
