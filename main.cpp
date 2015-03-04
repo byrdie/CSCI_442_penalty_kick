@@ -6,6 +6,13 @@
  * Copyright Aldebaran Robotics
  */
 
+// Standard includes
+#include <cstddef>
+#include <stdlib.h>
+#include <iostream>
+#include <string>
+
+
 // Aldebaran includes.
 #include <alproxies/alvideodeviceproxy.h>
 #include <alvision/alimage.h>
@@ -15,112 +22,117 @@
 // Opencv includes.
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
-
-
-#include <iostream>
-#include <string>
 #include <opencv2/imgproc/imgproc.hpp>
+
 
 using namespace AL;
 using namespace cv;
 
-/**
- * \brief Shows images retrieved from the robot.
- *
- * \param robotIp the IP adress of the robot
- */
-void showImages(const std::string& robotIp) {
-    /** Create a proxy to ALVideoDevice on the robot.*/
-    ALVideoDeviceProxy camProxy(robotIp, 9559);
+extern "C" {
 
-    /** Subscribe a client image requiring 320*240 and BGR colorspace.*/
-    const std::string clientName = camProxy.subscribe("test", kQVGA, kBGRColorSpace, 30);
+    /**
+     * \brief Shows images retrieved from the robot.
+     *
+     * \param robotIp the IP adress of the robot
+     */
+    void showImages(const std::string& robotIp) {
+        /** Create a proxy to ALVideoDevice on the robot.*/
+        ALVideoDeviceProxy camProxy(robotIp, 9559);
 
-    /** Create an cv::Mat header to wrap into an opencv image.*/
-    cv::Mat img = cv::Mat(cv::Size(320, 240), CV_8UC3);
+        /** Subscribe a client image requiring 320*240 and BGR colorspace.*/
+        const std::string clientName = camProxy.subscribe("test", kQVGA, kBGRColorSpace, 30);
 
-    /** Create a OpenCV window to display the images. */
-    cv::namedWindow("images");
+        /** Create an cv::Mat header to wrap into an opencv image.*/
+        cv::Mat img = cv::Mat(cv::Size(320, 240), CV_8UC3);
 
-    /*create image buffers*/
-    cv::Mat hsv = img.clone();
-
-    /*HSV values for the YELLOW tennis ball*/
-    int iLowH = 170; // Hue
-    int iHighH = 179;
-    int iLowS = 150; // Saturation
-    int iHighS = 255;
-    int iLowV = 60; // value
-    int iHighV = 255;
-
-    //Create trackbars in "Control" window
-    cv::createTrackbar("LowH", "Control", &iLowH, 179); //Hue (0 - 179)
-    cv::createTrackbar("HighH", "Control", &iHighH, 179);
-
-    cv::createTrackbar("LowS", "Control", &iLowS, 255); //Saturation (0 - 255)
-    cv::createTrackbar("HighS", "Control", &iHighS, 255);
-
-    cv::createTrackbar("LowV", "Control", &iLowV, 255); //Value (0 - 255)
-    cv::createTrackbar("HighV", "Control", &iHighV, 255);
+        /** Create a OpenCV window to display the images. */
+        cv::namedWindow("images", CV_WINDOW_KEEPRATIO);
+        cv::namedWindow("Thresholded Image", CV_WINDOW_KEEPRATIO);
 
 
-    /** Main loop. Exit when pressing ESC.*/
-    while ((char) cv::waitKey(30) != 27) {
-        /** Retrieve an image from the camera.
-         * The image is returned in the form of a container object, with the
-         * following fields:
-         * 0 = width
-         * 1 = height
-         * 2 = number of layers
-         * 3 = colors space index (see alvisiondefinitions.h)
-         * 4 = time stamp (seconds)
-         * 5 = time stamp (micro seconds)
-         * 6 = image buffer (size of width * height * number of layers)
-         */
-        ALValue img = camProxy.getImageRemote(clientName);
+        /*create image buffers*/
+        cv::Mat hsv = cv::Mat(cv::Size(320, 240), CV_8UC3);
 
-        /** Access the image buffer (6th field) and assign it to the opencv image
-         * container. */
-        //        img.data = (uchar*) img[6].GetBinary();
-        img = (uchar*) img[6].GetBinary();
+        /*HSV values for the YELLOW tennis ball*/
+        int iLowH = 170; // Hue
+        int iHighH = 179;
+        int iLowS = 150; // Saturation
+        int iHighS = 255;
+        int iLowV = 60; // value
+        int iHighV = 255;
+
+        //Create trackbars in "Control" window
+        cv::createTrackbar("LowH", "Thresholded Image", &iLowH, 179); //Hue (0 - 179)
+        cv::createTrackbar("HighH", "Thresholded Image", &iHighH, 179);
+
+        cv::createTrackbar("LowS", "Thresholded Image", &iLowS, 255); //Saturation (0 - 255)
+        cv::createTrackbar("HighS", "Thresholded Image", &iHighS, 255);
+
+        cv::createTrackbar("LowV", "Thresholded Image", &iLowV, 255); //Value (0 - 255)
+        cv::createTrackbar("HighV", "Thresholded Image", &iHighV, 255);
 
 
-        /** Tells to ALVideoDevice that it can give back the image buffer to the
-         * driver. Optional after a getImageRemote but MANDATORY after a getImageLocal.*/
-        camProxy.releaseImage(clientName);
+        /** Main loop. Exit when pressing ESC.*/
+        while ((char) cv::waitKey(30) != 27) {
+            /** Retrieve an image from the camera.
+             * The image is returned in the form of a container object, with the
+             * following fields:
+             * 0 = width
+             * 1 = height
+             * 2 = number of layers
+             * 3 = colors space index (see alvisiondefinitions.h)
+             * 4 = time stamp (seconds)
+             * 5 = time stamp (micro seconds)
+             * 6 = image buffer (size of width * height * number of layers)
+             */
+            ALValue image = camProxy.getImageRemote(clientName);
 
-        /*Here is where we start doing the ball detection*/
+            /** Access the image buffer (6th field) and assign it to the opencv image
+             * container. */
+            //        img.data = (uchar*) img[6].GetBinary();
+            img.data = (uchar*) image[6].GetBinary();
 
-        /*convert BGR to HSV*/
-//        cv::cvtColor(img, hsv, CV_BGR2HSV);
-        //
-        //        /*Threshold image for color detection*/
-        //        Mat imgThresholded;
-        //        inRange(hsv, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded); //Threshold the image
-        //
-        //        /** Display the iplImage on screen.*/
-        cv::imshow("images", img);
-        //        imshow("Thresholded Image", imgThresholded); //show the thresholded image
+
+
+            /** Tells to ALVideoDevice that it can give back the image buffer to the
+             * driver. Optional after a getImageRemote but MANDATORY after a getImageLocal.*/
+            camProxy.releaseImage(clientName);
+
+            /*Here is where we start doing the ball detection*/
+
+            /*convert BGR to HSV*/
+            cvtColor(hsv, hsv, 40);
+
+            /*Threshold image for color detection*/
+//            Mat imgThresholded;
+//            inRange(hsv, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded); //Threshold the image
+
+            /** Display the iplImage on screen.*/
+            cv::imshow("images", img);
+//            imshow("Thresholded Image", hsv); //show the thresholded image
+        }
+
+        /** Cleanup.*/
+        camProxy.unsubscribe(clientName);
     }
 
-    /** Cleanup.*/
-    camProxy.unsubscribe(clientName);
-}
+    int main(int argc, char* argv[]) {
+        //    if (argc < 2) {
+        //        std::cerr << "Usage 'getimages robotIp'" << std::endl;
+        //        return 1;
+        //    }
 
-int main(int argc, char* argv[]) {
-    if (argc < 2) {
-        std::cerr << "Usage 'getimages robotIp'" << std::endl;
-        return 1;
+        //    const std::string robotIp(argv[1]);
+        const std::string robotIp("153.90.197.238");
+
+
+        try {
+            showImages(robotIp);
+        } catch (const AL::ALError& e) {
+            std::cerr << "Caught exception " << e.what() << std::endl;
+        }
+
+        return 0;
     }
 
-    const std::string robotIp(argv[1]);
-
-    try {
-        showImages(robotIp);
-    } catch (const AL::ALError& e) {
-        std::cerr << "Caught exception " << e.what() << std::endl;
-    }
-
-    return 0;
-}
-
+} // extern "C"
