@@ -1,1 +1,0 @@
-/home/byrdie/zach/CSCI_442_penalty_kick/sayhelloworld/build-naoqi_sdk/CMakeFiles/sayhelloworld.dir
