@@ -1,0 +1,1 @@
+/home/byrdie/school/CSCI442_Robot_Vision/CSCI_442_penalty_kick/build-naoqi_sdk/CMakeFiles/penalty_kick.dir
