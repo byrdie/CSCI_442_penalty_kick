@@ -27,8 +27,6 @@
 using namespace AL;
 using namespace cv;
 
-//extern "C" {
-
 /**
  * \brief Shows images retrieved from the robot.
  *
@@ -51,8 +49,10 @@ void showImages(const std::string& robotIp) {
     cv::namedWindow("Thresholded Image", CV_WINDOW_KEEPRATIO);
     cv::namedWindow("Averages", CV_WINDOW_KEEPRATIO);
 
-    /*create vector of points to store trajectory of ball*/
-    vector<Point> traject(100); // only track the last 100 points
+    /*create vector of points to store trajectory of ball, only store last 100 points*/
+    vector<Point> com(100); // ball location according to center of mass
+    vector<Point> hough(100); //ball location according to houghs transform
+    vector<Point> traject(100); // final decision of ball location
 
     /*create image buffers*/
     cv::Mat hsv = cv::Mat(cv::Size(320, 240), CV_8UC3);
@@ -123,7 +123,7 @@ void showImages(const std::string& robotIp) {
         GaussianBlur(thresh, thresh, Size(15, 15), 0, 0); // blur before tranform 
         vector<Vec3f> circles;
         HoughCircles(thresh, circles, CV_HOUGH_GRADIENT, 2, thresh.rows, 200, 20, 0, 0);
-        
+
         /*draw circles detected by Hough transform*/
         for (size_t j = 0; j < circles.size(); j++) {
             Point center(cvRound(circles[j][0]), cvRound(circles[j][1]));
@@ -132,6 +132,11 @@ void showImages(const std::string& robotIp) {
             circle(img, center, 3, Scalar(0, 255, 0), -1, 8, 0);
             // circle outline
             circle(img, center, radius, Scalar(0, 0, 255), 3, 8, 0);
+
+            /*select the first circle as the thing we want: the ball*/
+            if (j == 0) {
+                hough[i] = center; // set the coordinate in the center as the location of the ball
+            }
         }
 
         /*calculate moments of the thresholded image*/
@@ -144,29 +149,50 @@ void showImages(const std::string& robotIp) {
         if (dA > 1000) {
 
             /*calculate position of the ball*/
-            traject[i].x = dM10 / dA;
-            traject[i].y = dM01 / dA;
+            com[i].x = dM10 / dA;
+            com[i].y = dM01 / dA;
+        }
 
-            /*make sure points are within bounds of the image*/
-            if (traject[oldi].x >= 0 && traject[oldi].y >= 0 && traject[i].x >= 0 && traject[i].y >= 0) {
+        /*make sure points are within bounds of the image*/
+        if (com[oldi].x > 0 && com[oldi].y > 0 && com[i].x > 0 && com[i].y > 0 && hough[oldi].x > 0 && hough[oldi].y > 0 && hough[i].x > 0 && hough[i].y > 0) {
+
+            /*calculate the distance between point reported by houghs and center of mass*/
+            int dX = hough[i].x - com[i].x;
+            int dY = hough[i].y - com[i].y;
+            double dist_squared = dX * dX + dY * dY;
+
+            if (dist_squared < 10) { // 10 is the threshold value for how much disagreement there can be between houghs and center of mass
+
+                /*If the two are close, set the final trajectory as the average between the two*/
+                traject[i].x = com[i].x + dX;
+                traject[i].y = com[i].y + dY;
+
                 //Draw a red line from the previous point to the current point
                 line(imgLines, traject[i], traject[oldi], Scalar(0, 0, 255), 2);
+
+                /*increment indices*/
+                oldi = i;
+                i = (i + 1) % 100;
+                
+            } else {
+                std::cout << "Houghs and COM disagreement!" << std::endl;
             }
 
-            /*increment indices*/
-            oldi = i;
-            i = (i + 1) % 100;           
 
+        } else {
+            std::cout << "Points equal to zero!" << std::endl; 
         }
+
+
 
         /*add lines to original image*/
         img = img + imgLines;
-        
+
 
         /** Display the iplImage on screen.*/
         cv::imshow("images", img);
-//        cv::imshow("Averages", run_ave);
-//        imshow("Thresholded Image", thresh); //show the thresholded image
+        //        cv::imshow("Averages", run_ave);
+        //        imshow("Thresholded Image", thresh); //show the thresholded image
     }
 
     /** Cleanup.*/
@@ -187,6 +213,4 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
-
-//} // extern "C"
 
