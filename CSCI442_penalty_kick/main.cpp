@@ -11,12 +11,14 @@
 #include <iostream>
 #include <string>
 #include <math.h>
+#include <list>
 
 // Aldebaran includes.
 #include <alproxies/alvideodeviceproxy.h>
 #include <alvision/alimage.h>
 #include <alvision/alvisiondefinitions.h>
 #include <alerror/alerror.h>
+#include <alproxies/alledsproxy.h>
 
 // Opencv includes.
 #include <opencv2/core/core.hpp>
@@ -45,19 +47,24 @@ void showImages(const std::string& robotIp) {
     cv::Mat weightedFrame = cv::Mat(img.size(), CV_32FC3);
 
     /** Create a OpenCV window to display the images. */
-    cv::namedWindow("images", CV_WINDOW_KEEPRATIO);
     cv::namedWindow("Thresholded Image", CV_WINDOW_KEEPRATIO);
+    cv::namedWindow("images", CV_WINDOW_KEEPRATIO);
+
     //    cv::namedWindow("Averages", CV_WINDOW_KEEPRATIO);
 
     /*create vector of points to store trajectory of ball, only store last 100 points*/
-    vector<Point> com(100); // ball location according to center of mass
-    vector<Point> hough(100); //ball location according to houghs transform
-    vector<Point> traject(100); // final decision of ball location
+    const int max_points = 20;
+    std::list<Point> traject; // final decision of ball location
 
     /*create image buffers*/
     cv::Mat hsv = cv::Mat(cv::Size(320, 240), CV_8UC3);
     Mat imgLines = Mat::zeros(hsv.size(), CV_8UC3);
 
+    /*Create proxy for controlling LEDs*/
+    AL::ALLedsProxy leds(robotIp, 9559);
+    std::string right = "RightFaceLedsGreen";
+    std::string left = "LeftFaceLedsGreen";
+    std::string both = "FaceLeds";
 
     /*HSV values for the YELLOW tennis ball*/;
     int iLowH = 19; // Hue
@@ -79,6 +86,8 @@ void showImages(const std::string& robotIp) {
     cv::createTrackbar("HighV", "Thresholded Image", &iHighV, 255);
 
     unsigned int index = 0; // index to track which frame we're at
+
+    leds.off(both); // turn off leds in between sessions
 
     /** Main loop. Exit when pressing ESC.*/
     while ((char) cv::waitKey(30) != 27) {
@@ -122,6 +131,7 @@ void showImages(const std::string& robotIp) {
         HoughCircles(thresh, circles, CV_HOUGH_GRADIENT, 2, thresh.rows, 200, 20, 0, 0);
 
         /*draw circles detected by Hough transform*/
+        Point hough;
         for (size_t i = 0; i < circles.size(); i++) {
             Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
             int radius = cvRound(circles[i][2]);
@@ -132,7 +142,7 @@ void showImages(const std::string& robotIp) {
 
             /*select the first circle as the thing we want: the ball*/
             if (i == 0) {
-                hough[index] = center; // set the coordinate in the center as the location of the ball
+                hough = center; // set the coordinate in the center as the location of the ball
             }
         }
 
@@ -143,69 +153,111 @@ void showImages(const std::string& robotIp) {
         double dA = mom.m00;
 
         /*If the area is greater than a thousand, we'll say the image contains an object to track*/
+        Point com;
         if (dA > 1000) {
 
             /*calculate position of the ball*/
-            com[index].x = dM10 / dA;
-            com[index].y = dM01 / dA;
+            com.x = dM10 / dA;
+            com.y = dM01 / dA;
+        } else {
+            //            continue;
         }
 
         /*make sure points are within bounds of the image*/
-        if (com[index].x > 0 && com[index].y > 0 && hough[index].x > 0 && hough[index].y > 0) {
+        if (com.x > 0 && com.y > 0 && hough.x > 0 && hough.y > 0) {
 
             /*calculate the distance between point reported by houghs and center of mass*/
-            int dX = hough[index].x - com[index].x;
-            int dY = hough[index].y - com[index].y;
+            int dX = hough.x - com.x;
+            int dY = hough.y - com.y;
             double dist_squared = dX * dX + dY * dY;
 
-            if (dist_squared < 10) { // 10 is the threshold value for how much disagreement there can be between houghs and center of mass
+            if (dist_squared < 20) { // 20 is the threshold value for how much disagreement there can be between houghs and center of mass
 
                 /*If the two are close, set the final trajectory as the average between the two*/
-                traject[index].x = com[index].x + dX;
-                traject[index].y = com[index].y + dY;
+                Point next_traject;
+                next_traject.x = com.x + dX;
+                next_traject.y = com.y + dY;
+                traject.push_back(next_traject);
 
-                //Draw a red line from the previous point to the current point
-                //                line(imgLines, traject[index], traject[oldi], Scalar(0, 0, 255), 2);
-
-                /*increment indices only if we have found a good ball location*/
-                index = (index + 1) % 100;
+                /*If there are more points in traject than the max size, delete the first item*/
+                if (traject.size() > max_points) {
+                    traject.pop_front();
+                }
 
             } else {
                 std::cout << "Houghs and COM disagreement!" << std::endl;
+                //                continue;
             }
 
         } else {
-            std::cout << "Points equal to zero!" << std::endl;
+            //            std::cout << "Points equal to zero!" << std::endl;
+            //            continue;
         }
 
-        /*allocate memory for trajectory line*/
-        Mat imgLines = Mat::zeros(img.size(), CV_8UC3);
+        /*draw the trjectory of the ball*/
+        Mat imgLines = Mat::zeros(img.size(), CV_8UC3); // allocate new memory
+        std::list<Point>::const_iterator iterate;
+        for (iterate = traject.begin(); iterate != traject.end(); ++iterate) {
 
-        /*add all points in the traject vector to find average direction*/
-        int sumX;
-        int sumY;
-        Point this_point; // current point in the sum
-        Point last_point; // last point in the sum
-        for (int i = 0; i < traject.size(); i++) {
-            this_point = traject[i];
-            sumX += this_point.x;
-            sumY += this_point.y;
-
-            /*while we're here, we may as well draw all the lines on the image*/
-            if (i != 0) { // add points after we go through the first point
-                //Draw a red line from the previous point to the current point
+            /*skip the first point, because we need two points to make a line*/
+            if (iterate != traject.begin()) {
+                Point this_point = *iterate;
+                Point last_point = *(--iterate);
+                ++iterate; // hack this together (infinite loop))
                 line(imgLines, this_point, last_point, Scalar(0, 0, 255), 2);
             }
-
-            last_point = this_point; // update last point
         }
 
+        /*find the average direction*/
+        Point first_point = traject.front(); //first point in current trajctory
+        Point final_point = traject.back();
+        double sumX = final_point.x - first_point.x;
+        double sumY = final_point.y - first_point.y;
+
+        /*draw average direction in blue*/
+        line(imgLines, first_point, final_point, Scalar(255, 0, 0), 2);
+
+        std::cout << "sumX is " << sumX << "    ";
+        std::cout << "sumY is " << sumY << "    ";
+
         /*use the average to find the angle theta at which the ball is moving*/
-        double theta = atan(sumY / sumX) * 180 / 3.1415;
+        double theta = 450.0;
+        if (sumX != 0) {
+            theta = atan(sumY / sumX) * 180 / 3.1415; // find angle of trajectory and convert to degrees
+        }
+
+        std::cout << "Theta is " << theta << std::endl;
+
+        /*direction decision*/
+        if (sumX > 0) { // Quadrants I and IV of unit circle, ball is going left
+            if (theta > -90 && theta < 45.0) {
+                leds.off(both);
+                leds.on(right);
+            } else if (theta >= 45.0 && theta < 90.0) {
+                leds.on(both);
+            } else {
+                std::cout << "wtf?" << std::endl;
+            }
+
+        } else { // quandrant II and III, ball is moving right
+            if (theta < 90 && theta > -45.0) {
+                leds.off(both);
+                leds.on(left);
+            } else if (theta <= 45.0 && theta > -90.0) {
+                leds.on(both);
+            } else {
+                std::cout << "wtf?" << std::endl;
+            }
+        }
+
+        /*add decay factor for keeping points*/ /*BROKEN*/
+        if (index % 20 == 0 && traject.empty()) {
+            traject.pop_front();
+        }
+        index++;        // increment index
 
         /*add lines to original image*/
         img = img + imgLines;
-
 
         /** Display the iplImage on screen.*/
         cv::imshow("images", img);
@@ -215,11 +267,12 @@ void showImages(const std::string& robotIp) {
 
     /** Cleanup.*/
     camProxy.unsubscribe(clientName);
+    
 }
 
 int main(int argc, char* argv[]) {
 
-    const std::string robotIp("153.90.197.238");
+    const std::string robotIp("153.90.197.185");
 
     std::cout << "OpenCV version: " << CV_VERSION << std::endl;
 
