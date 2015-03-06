@@ -213,6 +213,7 @@ void showImages(const std::string& robotIp) {
         Point final_point = traject.back();
         double sumX = final_point.x - first_point.x;
         double sumY = final_point.y - first_point.y;
+        double distance = sqrt(sumX * sumX + sumY * sumY);
 
         /*draw average direction in blue*/
         line(imgLines, first_point, final_point, Scalar(255, 0, 0), 2);
@@ -229,32 +230,37 @@ void showImages(const std::string& robotIp) {
         std::cout << "Theta is " << theta << std::endl;
 
         /*direction decision*/
-        if (sumX > 0) { // Quadrants I and IV of unit circle, ball is going left
-            if (theta > -90 && theta < 45.0) {
-                leds.off(both);
-                leds.on(right);
-            } else if (theta >= 45.0 && theta < 90.0) {
-                leds.on(both);
-            } else {
-                std::cout << "wtf?" << std::endl;
-            }
+        if (distance > 10) {
+            if (sumX > 0) { // Quadrants I and IV of unit circle, ball is going left
+                if (theta > -90 && theta < 45.0) {
+                    leds.off(both);
+                    leds.on(right);
+                } else if (theta >= 45.0 && theta < 90.0) {
+                    leds.on(both);
+                } else {
+                    std::cout << "wtf?" << std::endl;
+                }
 
-        } else { // quandrant II and III, ball is moving right
-            if (theta < 90 && theta > -45.0) {
-                leds.off(both);
-                leds.on(left);
-            } else if (theta <= 45.0 && theta > -90.0) {
-                leds.on(both);
-            } else {
-                std::cout << "wtf?" << std::endl;
+            } else { // quandrant II and III, ball is moving right
+                if (theta < 90 && theta > -45.0) {
+                    leds.off(both);
+                    leds.on(left);
+                } else if (theta <= 45.0 && theta > -90.0) {
+                    leds.on(both);
+                } else {
+                    std::cout << "wtf?" << std::endl;
+                }
             }
+        } else {
+            leds.off(both);
         }
 
-        /*add decay factor for keeping points*/ /*BROKEN*/
-        if (index % 20 == 0 && traject.empty()) {
+
+        /*add decay factor for keeping points*/
+        if (index % 2 == 0 && !traject.empty()) {
             traject.pop_front();
         }
-        index++;        // increment index
+        index++; // increment index
 
         /*add lines to original image*/
         img = img + imgLines;
@@ -267,7 +273,7 @@ void showImages(const std::string& robotIp) {
 
     /** Cleanup.*/
     camProxy.unsubscribe(clientName);
-    
+
 }
 
 int main(int argc, char* argv[]) {
