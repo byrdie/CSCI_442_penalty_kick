@@ -1,3 +1,4 @@
+
 /* 
  * File:   main.cpp
  * Author: Roy Smart, Zach Fisher
@@ -230,22 +231,22 @@ void showImages(const std::string& robotIp) {
         std::cout << "Theta is " << theta << std::endl;
 
         /*direction decision*/
-        if (distance > 10) {
-            if (sumX > 0) { // Quadrants I and IV of unit circle, ball is going left
-                if (theta > -90 && theta < 45.0) {
+        if (distance > 15) {
+            if (sumX > 0) { // Quadrants I and IV of unit circle, ball is going left or straight
+                if (theta > -90 && theta < 45.0) {      //moving left
                     leds.off(both);
                     leds.on(right);
-                } else if (theta >= 45.0 && theta < 90.0) {
+                } else if (theta >= 45.0 && theta < 90.0) {     //moving straight
                     leds.on(both);
                 } else {
                     std::cout << "wtf?" << std::endl;
                 }
 
-            } else { // quandrant II and III, ball is moving right
-                if (theta < 90 && theta > -45.0) {
+            } else { // quandrant II and III, ball is moving right or straight
+                if (theta < 90 && theta > -45.0) {     //moving right 
                     leds.off(both);
                     leds.on(left);
-                } else if (theta <= 45.0 && theta > -90.0) {
+                } else if (theta <= 45.0 && theta > -90.0) {           //moving straight
                     leds.on(both);
                 } else {
                     std::cout << "wtf?" << std::endl;
