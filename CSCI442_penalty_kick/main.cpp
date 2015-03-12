@@ -6,29 +6,24 @@
  * Created on March 4, 2015, 6:29 AM
  */
 
-// Standard includes
-#include <cstddef>
-#include <stdlib.h>
-#include <iostream>
-#include <string>
-#include <math.h>
-#include <list>
-
-// Aldebaran includes.
-#include <alproxies/alvideodeviceproxy.h>
-#include <alvision/alimage.h>
-#include <alvision/alvisiondefinitions.h>
-#include <alerror/alerror.h>
-#include <alproxies/alledsproxy.h>
-
-// Opencv includes.
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
 
 
-using namespace AL;
-using namespace cv;
+
+#include "main.h"
+
+
+
+
+/*HSV values for the YELLOW tennis ball*/;
+int iLowH = 19; // Hue
+int iHighH = 39;
+int iLowS = 109; // Saturation
+int iHighS = 255;
+int iLowV = 55; // value
+int iHighV = 255;
+
+/** Create an cv::Mat header to wrap into an opencv image.*/
+cv::Mat img = cv::Mat(cv::Size(320, 240), CV_8UC3);
 
 /**
  * \brief Shows images retrieved from the robot.
@@ -42,15 +37,9 @@ void showImages(const std::string& robotIp) {
     /** Subscribe a client image requiring 320*240 and BGR colorspace.*/
     const std::string clientName = camProxy.subscribe("test", kQVGA, kBGRColorSpace, 30);
 
-    /** Create an cv::Mat header to wrap into an opencv image.*/
-    cv::Mat img = cv::Mat(cv::Size(320, 240), CV_8UC3);
-    cv::Mat run_ave = cv::Mat(img.size(), CV_8UC3);
-    cv::Mat weightedFrame = cv::Mat(img.size(), CV_32FC3);
-
     /** Create a OpenCV window to display the images. */
-    cv::namedWindow("Thresholded Image", CV_WINDOW_KEEPRATIO);
+    //    cv::namedWindow("Thresholded Image", CV_WINDOW_KEEPRATIO);
     cv::namedWindow("images", CV_WINDOW_KEEPRATIO);
-
     //    cv::namedWindow("Averages", CV_WINDOW_KEEPRATIO);
 
     /*create vector of points to store trajectory of ball, only store last 100 points*/
@@ -58,8 +47,8 @@ void showImages(const std::string& robotIp) {
     std::list<Point> traject; // final decision of ball location
 
     /*create image buffers*/
-    cv::Mat hsv = cv::Mat(cv::Size(320, 240), CV_8UC3);
-    Mat imgLines = Mat::zeros(hsv.size(), CV_8UC3);
+
+    Mat imgLines = Mat::zeros(img.size(), CV_8UC3);
 
     /*Create proxy for controlling LEDs*/
     AL::ALLedsProxy leds(robotIp, 9559);
@@ -67,24 +56,17 @@ void showImages(const std::string& robotIp) {
     std::string left = "LeftFaceLedsGreen";
     std::string both = "FaceLeds";
 
-    /*HSV values for the YELLOW tennis ball*/;
-    int iLowH = 19; // Hue
-    int iHighH = 39;
-    int iLowS = 109; // Saturation
-    int iHighS = 255;
-    int iLowV = 55; // value
-    int iHighV = 255;
 
     //Create trackbars in "Control" window
     //This is for adjusting the HSV values to match the tennis ball properly
-    cv::createTrackbar("LowH", "Thresholded Image", &iLowH, 179); //Hue (0 - 179)
-    cv::createTrackbar("HighH", "Thresholded Image", &iHighH, 179);
-
-    cv::createTrackbar("LowS", "Thresholded Image", &iLowS, 255); //Saturation (0 - 255)
-    cv::createTrackbar("HighS", "Thresholded Image", &iHighS, 255);
-
-    cv::createTrackbar("LowV", "Thresholded Image", &iLowV, 255); //Value (0 - 255)
-    cv::createTrackbar("HighV", "Thresholded Image", &iHighV, 255);
+//    cv::createTrackbar("LowH", "Thresholded Image", &iLowH, 179); //Hue (0 - 179)
+//    cv::createTrackbar("HighH", "Thresholded Image", &iHighH, 179);
+//
+//    cv::createTrackbar("LowS", "Thresholded Image", &iLowS, 255); //Saturation (0 - 255)
+//    cv::createTrackbar("HighS", "Thresholded Image", &iHighS, 255);
+//
+//    cv::createTrackbar("LowV", "Thresholded Image", &iLowV, 255); //Value (0 - 255)
+//    cv::createTrackbar("HighV", "Thresholded Image", &iHighV, 255);
 
     unsigned int index = 0; // index to track which frame we're at
 
@@ -105,94 +87,16 @@ void showImages(const std::string& robotIp) {
         camProxy.releaseImage(clientName);
 
         /*Here is where we start doing the ball detection*/
+        Point next_traject = find_ball(img);
+        if (next_traject.x != 0 && next_traject.y != 0) {
+            
+            /*put next point into list of points*/
+            traject.push_back(next_traject);
 
-        /*blur frame and take average*/
-        cv::GaussianBlur(img, run_ave, Size(5, 5), 0, 0);
-        cv::accumulateWeighted(run_ave, weightedFrame, 0.80);
-        cv::convertScaleAbs(weightedFrame, run_ave, 1.0, 0.0);
-
-        /*convert BGR to HSV*/
-        cvtColor(run_ave, hsv, CV_BGR2HSV);
-
-        /*Threshold image for color detection*/
-        Mat thresh;
-        inRange(hsv, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), thresh); //Threshold the image
-
-        /*morphological opening, removes small objects from the foreground*/
-        erode(thresh, thresh, getStructuringElement(MORPH_ELLIPSE, Size(10, 10)));
-        dilate(thresh, thresh, getStructuringElement(MORPH_ELLIPSE, Size(10, 10)));
-
-        /*morphological closing, removes small holes from foreground*/
-        dilate(thresh, thresh, getStructuringElement(MORPH_ELLIPSE, Size(10, 10)));
-        erode(thresh, thresh, getStructuringElement(MORPH_ELLIPSE, Size(10, 10)));
-
-        /*Hough transform*/
-        GaussianBlur(thresh, thresh, Size(15, 15), 0, 0); // blur before tranform 
-        vector<Vec3f> circles;
-        HoughCircles(thresh, circles, CV_HOUGH_GRADIENT, 2, thresh.rows, 200, 20, 0, 0);
-
-        /*draw circles detected by Hough transform*/
-        Point hough;
-        for (size_t i = 0; i < circles.size(); i++) {
-            Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
-            int radius = cvRound(circles[i][2]);
-            // circle center
-            circle(img, center, 3, Scalar(0, 255, 0), -1, 8, 0);
-            // circle outline
-            circle(img, center, radius, Scalar(0, 0, 255), 3, 8, 0);
-
-            /*select the first circle as the thing we want: the ball*/
-            if (i == 0) {
-                hough = center; // set the coordinate in the center as the location of the ball
+            /*If there are more points in traject than the max size, delete the first item*/
+            if (traject.size() > max_points) {
+                traject.pop_front();
             }
-        }
-
-        /*calculate moments of the thresholded image*/
-        Moments mom = moments(thresh);
-        double dM01 = mom.m01;
-        double dM10 = mom.m10;
-        double dA = mom.m00;
-
-        /*If the area is greater than a thousand, we'll say the image contains an object to track*/
-        Point com;
-        if (dA > 1000) {
-
-            /*calculate position of the ball*/
-            com.x = dM10 / dA;
-            com.y = dM01 / dA;
-        } else {
-            //            continue;
-        }
-
-        /*make sure points are within bounds of the image*/
-        if (com.x > 0 && com.y > 0 && hough.x > 0 && hough.y > 0) {
-
-            /*calculate the distance between point reported by houghs and center of mass*/
-            int dX = hough.x - com.x;
-            int dY = hough.y - com.y;
-            double dist_squared = dX * dX + dY * dY;
-
-            if (dist_squared < 20) { // 20 is the threshold value for how much disagreement there can be between houghs and center of mass
-
-                /*If the two are close, set the final trajectory as the average between the two*/
-                Point next_traject;
-                next_traject.x = com.x + dX;
-                next_traject.y = com.y + dY;
-                traject.push_back(next_traject);
-
-                /*If there are more points in traject than the max size, delete the first item*/
-                if (traject.size() > max_points) {
-                    traject.pop_front();
-                }
-
-            } else {
-                std::cout << "Houghs and COM disagreement!" << std::endl;
-                //                continue;
-            }
-
-        } else {
-            //            std::cout << "Points equal to zero!" << std::endl;
-            //            continue;
         }
 
         /*draw the trjectory of the ball*/
@@ -233,20 +137,20 @@ void showImages(const std::string& robotIp) {
         /*direction decision*/
         if (distance > 15) {
             if (sumX > 0) { // Quadrants I and IV of unit circle, ball is going left or straight
-                if (theta > -90 && theta < 45.0) {      //moving left
+                if (theta > -90 && theta < 45.0) { //moving left
                     leds.off(both);
                     leds.on(right);
-                } else if (theta >= 45.0 && theta < 90.0) {     //moving straight
+                } else if (theta >= 45.0 && theta < 90.0) { //moving straight
                     leds.on(both);
                 } else {
                     std::cout << "wtf?" << std::endl;
                 }
 
             } else { // quandrant II and III, ball is moving right or straight
-                if (theta < 90 && theta > -45.0) {     //moving right 
+                if (theta < 90 && theta > -45.0) { //moving right 
                     leds.off(both);
                     leds.on(left);
-                } else if (theta <= 45.0 && theta > -90.0) {           //moving straight
+                } else if (theta <= 45.0 && theta > -90.0) { //moving straight
                     leds.on(both);
                 } else {
                     std::cout << "wtf?" << std::endl;
@@ -269,7 +173,7 @@ void showImages(const std::string& robotIp) {
         /** Display the iplImage on screen.*/
         cv::imshow("images", img);
         //        cv::imshow("Averages", run_ave);
-        imshow("Thresholded Image", thresh); //show the thresholded image
+//        imshow("Thresholded Image", thresh); //show the thresholded image
     }
 
     /** Cleanup.*/
@@ -292,3 +196,95 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
+Point find_ball(Mat img) {
+
+    /*allocate image buffers*/
+    cv::Mat hsv = cv::Mat(cv::Size(320, 240), CV_8UC3);
+    cv::Mat run_ave = cv::Mat(img.size(), CV_8UC3);
+    cv::Mat weightedFrame = cv::Mat(img.size(), CV_32FC3);
+
+    /*blur frame and take average*/
+    cv::GaussianBlur(img, run_ave, Size(5, 5), 0, 0);
+    cv::accumulateWeighted(run_ave, weightedFrame, 0.80);
+    cv::convertScaleAbs(weightedFrame, run_ave, 1.0, 0.0);
+
+    /*convert BGR to HSV*/
+    cvtColor(run_ave, hsv, CV_BGR2HSV);
+
+    /*Threshold image for color detection*/
+    Mat thresh;
+    inRange(hsv, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), thresh); //Threshold the image
+
+    /*morphological opening, removes small objects from the foreground*/
+    erode(thresh, thresh, getStructuringElement(MORPH_ELLIPSE, Size(10, 10)));
+    dilate(thresh, thresh, getStructuringElement(MORPH_ELLIPSE, Size(10, 10)));
+
+    /*morphological closing, removes small holes from foreground*/
+    dilate(thresh, thresh, getStructuringElement(MORPH_ELLIPSE, Size(10, 10)));
+    erode(thresh, thresh, getStructuringElement(MORPH_ELLIPSE, Size(10, 10)));
+
+    /*Hough transform*/
+    GaussianBlur(thresh, thresh, Size(15, 15), 0, 0); // blur before tranform 
+    vector<Vec3f> circles;
+    HoughCircles(thresh, circles, CV_HOUGH_GRADIENT, 2, thresh.rows, 200, 20, 0, 0);
+
+    /*draw circles detected by Hough transform*/
+    Point hough;
+    for (size_t i = 0; i < circles.size(); i++) {
+        Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
+        int radius = cvRound(circles[i][2]);
+        // circle center
+        circle(img, center, 3, Scalar(0, 255, 0), -1, 8, 0);
+        // circle outline
+        circle(img, center, radius, Scalar(0, 0, 255), 3, 8, 0);
+
+        /*select the first circle as the thing we want: the ball*/
+        if (i == 0) {
+            hough = center; // set the coordinate in the center as the location of the ball
+        }
+    }
+
+    /*calculate moments of the thresholded image*/
+    Moments mom = moments(thresh);
+    double dM01 = mom.m01;
+    double dM10 = mom.m10;
+    double dA = mom.m00;
+
+    /*If the area is greater than a thousand, we'll say the image contains an object to track*/
+    Point com;
+    if (dA > 1000) {
+
+        /*calculate position of the ball*/
+        com.x = dM10 / dA;
+        com.y = dM01 / dA;
+    } else {
+        //            continue;
+    }
+
+    /*make sure points are within bounds of the image*/
+    Point next_traject = Point(0, 0);
+    if (com.x > 0 && com.y > 0 && hough.x > 0 && hough.y > 0) {
+
+        /*calculate the distance between point reported by houghs and center of mass*/
+        int dX = hough.x - com.x;
+        int dY = hough.y - com.y;
+        double dist_squared = dX * dX + dY * dY;
+
+        if (dist_squared < 20) { // 20 is the threshold value for how much disagreement there can be between houghs and center of mass
+
+            /*If the two are close, set the final trajectory as the average between the two*/
+            next_traject.x = com.x + dX;
+            next_traject.y = com.y + dY;
+
+        } else {
+            std::cout << "Houghs and COM disagreement!" << std::endl;
+            //                continue;
+        }
+
+    } else {
+        //            std::cout << "Points equal to zero!" << std::endl;
+        //            continue;
+    }
+
+    return next_traject;
+}
