@@ -49,11 +49,6 @@
           </linkerAddLib>
           <linkerLibItems>
             <linkerOptionItem>`pkg-config --libs opencv`</linkerOptionItem>
-            <linkerLibLibItem>QtCore</linkerLibLibItem>
-            <linkerLibLibItem>QtGui</linkerLibLibItem>
-            <linkerLibLibItem>QtMultimedia</linkerLibLibItem>
-            <linkerLibLibItem>QtNetwork</linkerLibLibItem>
-            <linkerLibLibItem>QtXml</linkerLibLibItem>
             <linkerLibLibItem>alaudio</linkerLibLibItem>
             <linkerLibLibItem>albehavior</linkerLibLibItem>
             <linkerLibLibItem>albehaviorinfo</linkerLibLibItem>
@@ -85,10 +80,6 @@
             <linkerLibLibItem>alvalue</linkerLibLibItem>
             <linkerLibLibItem>alvalueconvert</linkerLibLibItem>
             <linkerLibLibItem>alvision</linkerLibLibItem>
-            <linkerLibLibItem>archive</linkerLibLibItem>
-            <linkerLibLibItem>avahi-client</linkerLibLibItem>
-            <linkerLibLibItem>avahi-common</linkerLibLibItem>
-            <linkerLibLibItem>avahi-core</linkerLibLibItem>
             <linkerLibLibItem>bn-common</linkerLibLibItem>
             <linkerLibLibItem>bn-i2c</linkerLibLibItem>
             <linkerLibLibItem>bn-ps</linkerLibLibItem>
@@ -177,7 +168,6 @@
             <linkerLibLibItem>posturedetector</linkerLibLibItem>
             <linkerLibLibItem>posturegraph</linkerLibLibItem>
             <linkerLibLibItem>posturemanager</linkerLibLibItem>
-            <linkerLibLibItem>python2.7</linkerLibLibItem>
             <linkerLibLibItem>qi</linkerLibLibItem>
             <linkerLibLibItem>qiproject-qt</linkerLibLibItem>
             <linkerLibLibItem>qiproject</linkerLibLibItem>

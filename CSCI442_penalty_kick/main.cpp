@@ -8,6 +8,13 @@
 
 #include "main.h"
 
+/*HSV values for the YELLOW tennis ball*/;
+int iLowH = 19; // Hue
+int iHighH = 39;
+int iLowS = 109; // Saturation
+int iHighS = 255;
+int iLowV = 55; // value
+int iHighV = 255;
 
 /** Create an cv::Mat header to wrap into an opencv image.*/
 Mat img = Mat(cv::Size(320, 240), CV_8UC3);
@@ -45,6 +52,12 @@ void ball_track(const std::string& robotIp) {
     /** Create a proxy to ALVideoDevice on the robot.*/
     ALVideoDeviceProxy camProxy(robotIp, 9559);
 
+    /*Create proxy for controlling LEDs*/
+    AL::ALLedsProxy leds(robotIp, 9559);
+    std::string right = "RightFaceLedsGreen";
+    std::string left = "LeftFaceLedsGreen";
+    std::string both = "FaceLeds";
+
     /** Subscribe a client image requiring 320*240 and BGR colorspace.*/
     const std::string clientName = camProxy.subscribe("test", kQVGA, kBGRColorSpace, 30);
 
@@ -54,18 +67,13 @@ void ball_track(const std::string& robotIp) {
     //    cv::namedWindow("Averages", CV_WINDOW_KEEPRATIO);
 
     /*create vector of points to store trajectory of ball, only store last 100 points*/
+
     const int max_points = 20;
     std::list<Point> traject; // final decision of ball location
 
     /*create image buffers*/
 
     Mat imgLines = Mat::zeros(img.size(), CV_8UC3);
-
-    /*Create proxy for controlling LEDs*/
-    AL::ALLedsProxy leds(robotIp, 9559);
-    std::string right = "RightFaceLedsGreen";
-    std::string left = "LeftFaceLedsGreen";
-    std::string both = "FaceLeds";
 
 
     //Create trackbars in "Control" window
@@ -98,6 +106,7 @@ void ball_track(const std::string& robotIp) {
         camProxy.releaseImage(clientName);
 
         /*Here is where we start doing the ball detection*/
+
         Point next_traject = find_ball(img);
         if (next_traject.x != 0 && next_traject.y != 0) {
 
