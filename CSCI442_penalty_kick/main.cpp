@@ -8,13 +8,7 @@
 
 #include "main.h"
 
-/*HSV values for the YELLOW tennis ball*/;
-int iLowH = 19; // Hue
-int iHighH = 39;
-int iLowS = 109; // Saturation
-int iHighS = 255;
-int iLowV = 55; // value
-int iHighV = 255;
+
 
 /** Create an cv::Mat header to wrap into an opencv image.*/
 Mat img = Mat(cv::Size(320, 240), CV_8UC3);
@@ -38,7 +32,19 @@ int main(int argc, char* argv[]) {
     AL::ALRobotPostureProxy pose(robotIp, 9559);
 
     //    motion.setStiffnesses("Body", 0.9);
-    pose.goToPosture("Sit", 1.0);
+    pose.goToPosture("Stand", 1.0);
+    
+    motion.moveInit();
+    
+    motion.move(1.0, 0.0, 0.0);
+    
+    sleep(4);
+    
+    motion.stopMove();
+    
+    pose.goToPosture("Crouch", 1.0);
+    
+    motion.setStiffnesses("Body", 0.0);
 
     return 0;
 }

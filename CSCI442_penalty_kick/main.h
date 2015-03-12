@@ -42,7 +42,7 @@ int iHighS = 255;
 int iLowV = 55; // value
 int iHighV = 255;
 
-const std::string robotIp("153.90.197.185");
+const std::string robotIp("153.90.197.249");
 
 
 Point find_ball(Mat img);
