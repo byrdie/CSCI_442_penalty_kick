@@ -8,23 +8,40 @@
 
 #include "main.h"
 
-/*HSV values for the YELLOW tennis ball*/;
-int iLowH = 19; // Hue
-int iHighH = 39;
-int iLowS = 109; // Saturation
-int iHighS = 255;
-int iLowV = 55; // value
-int iHighV = 255;
 
 /** Create an cv::Mat header to wrap into an opencv image.*/
-cv::Mat img = cv::Mat(cv::Size(320, 240), CV_8UC3);
+Mat img = Mat(cv::Size(320, 240), CV_8UC3);
+
+int main(int argc, char* argv[]) {
+
+    std::cout << "OpenCV version: " << CV_VERSION << std::endl;
+
+
+    try {
+        //        ball_track(robotIp);
+
+
+
+
+
+    } catch (const AL::ALError& e) {
+        std::cerr << "Caught exception " << e.what() << std::endl;
+    }
+    AL::ALMotionProxy motion(robotIp, 9559);
+    AL::ALRobotPostureProxy pose(robotIp, 9559);
+
+    //    motion.setStiffnesses("Body", 0.9);
+    pose.goToPosture("Sit", 1.0);
+
+    return 0;
+}
 
 /**
  * \brief Shows images retrieved from the robot.
  *
  * \param robotIp the IP adress of the robot
  */
-void showImages(const std::string& robotIp) {
+void ball_track(const std::string& robotIp) {
     /** Create a proxy to ALVideoDevice on the robot.*/
     ALVideoDeviceProxy camProxy(robotIp, 9559);
 
@@ -53,14 +70,14 @@ void showImages(const std::string& robotIp) {
 
     //Create trackbars in "Control" window
     //This is for adjusting the HSV values to match the tennis ball properly
-//    cv::createTrackbar("LowH", "Thresholded Image", &iLowH, 179); //Hue (0 - 179)
-//    cv::createTrackbar("HighH", "Thresholded Image", &iHighH, 179);
-//
-//    cv::createTrackbar("LowS", "Thresholded Image", &iLowS, 255); //Saturation (0 - 255)
-//    cv::createTrackbar("HighS", "Thresholded Image", &iHighS, 255);
-//
-//    cv::createTrackbar("LowV", "Thresholded Image", &iLowV, 255); //Value (0 - 255)
-//    cv::createTrackbar("HighV", "Thresholded Image", &iHighV, 255);
+    //    cv::createTrackbar("LowH", "Thresholded Image", &iLowH, 179); //Hue (0 - 179)
+    //    cv::createTrackbar("HighH", "Thresholded Image", &iHighH, 179);
+    //
+    //    cv::createTrackbar("LowS", "Thresholded Image", &iLowS, 255); //Saturation (0 - 255)
+    //    cv::createTrackbar("HighS", "Thresholded Image", &iHighS, 255);
+    //
+    //    cv::createTrackbar("LowV", "Thresholded Image", &iLowV, 255); //Value (0 - 255)
+    //    cv::createTrackbar("HighV", "Thresholded Image", &iHighV, 255);
 
     unsigned int index = 0; // index to track which frame we're at
 
@@ -83,7 +100,7 @@ void showImages(const std::string& robotIp) {
         /*Here is where we start doing the ball detection*/
         Point next_traject = find_ball(img);
         if (next_traject.x != 0 && next_traject.y != 0) {
-            
+
             /*put next point into list of points*/
             traject.push_back(next_traject);
 
@@ -167,27 +184,12 @@ void showImages(const std::string& robotIp) {
         /** Display the iplImage on screen.*/
         cv::imshow("images", img);
         //        cv::imshow("Averages", run_ave);
-//        imshow("Thresholded Image", thresh); //show the thresholded image
+        //        imshow("Thresholded Image", thresh); //show the thresholded image
     }
 
     /** Cleanup.*/
     camProxy.unsubscribe(clientName);
 
-}
-
-int main(int argc, char* argv[]) {
-
-    const std::string robotIp("153.90.197.185");
-
-    std::cout << "OpenCV version: " << CV_VERSION << std::endl;
-
-    try {
-        showImages(robotIp);
-    } catch (const AL::ALError& e) {
-        std::cerr << "Caught exception " << e.what() << std::endl;
-    }
-
-    return 0;
 }
 
 Point find_ball(Mat img) {
