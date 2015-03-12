@@ -6,13 +6,7 @@
  * Created on March 4, 2015, 6:29 AM
  */
 
-
-
-
 #include "main.h"
-
-
-
 
 /*HSV values for the YELLOW tennis ball*/;
 int iLowH = 19; // Hue
