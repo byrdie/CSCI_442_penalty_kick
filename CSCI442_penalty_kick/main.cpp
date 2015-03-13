@@ -7,11 +7,15 @@
  */
 
 #include "main.h"
+#include "move.h"
 
-
-
-/** Create an cv::Mat header to wrap into an opencv image.*/
-Mat img = Mat(cv::Size(320, 240), CV_8UC3);
+/*HSV values for the YELLOW tennis ball*/;
+int iLowH = 19; // Hue
+int iHighH = 39;
+int iLowS = 109; // Saturation
+int iHighS = 255;
+int iLowV = 55; // value
+int iHighV = 255;
 
 int main(int argc, char* argv[]) {
 
@@ -21,40 +25,31 @@ int main(int argc, char* argv[]) {
     try {
         //        ball_track(robotIp);
 
+        robot_init();
 
+        move_to_ball();
+
+        robot_cleanup();
 
 
 
     } catch (const AL::ALError& e) {
         std::cerr << "Caught exception " << e.what() << std::endl;
     }
-    AL::ALMotionProxy motion(robotIp, 9559);
-    AL::ALRobotPostureProxy pose(robotIp, 9559);
 
-    //    motion.setStiffnesses("Body", 0.9);
-    pose.goToPosture("Stand", 1.0);
-    
-    motion.moveInit();
-    
-    motion.move(1.0, 0.0, 0.0);
-    
-    sleep(4);
-    
-    motion.stopMove();
-    
-    pose.goToPosture("Crouch", 1.0);
-    
-    motion.setStiffnesses("Body", 0.0);
 
     return 0;
 }
 
 /**
- * \brief Shows images retrieved from the robot.
+ * \brief Shows images retrieved from the robot. Used for part 2 of penalty kick
  *
  * \param robotIp the IP adress of the robot
  */
 void ball_track(const std::string& robotIp) {
+    /** Create an cv::Mat header to wrap into an opencv image.*/
+    Mat img = Mat(cv::Size(320, 240), CV_8UC3);
+
     /** Create a proxy to ALVideoDevice on the robot.*/
     ALVideoDeviceProxy camProxy(robotIp, 9559);
 
@@ -114,6 +109,7 @@ void ball_track(const std::string& robotIp) {
         /*Here is where we start doing the ball detection*/
 
         Point next_traject = find_ball(img);
+
         if (next_traject.x != 0 && next_traject.y != 0) {
 
             /*put next point into list of points*/

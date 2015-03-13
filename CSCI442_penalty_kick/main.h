@@ -31,16 +31,13 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+/*Custom includes*/
+#include "move.h"
+
+using namespace std;
 using namespace AL;
 using namespace cv;
 
-/*HSV values for the YELLOW tennis ball*/;
-int iLowH = 19; // Hue
-int iHighH = 39;
-int iLowS = 109; // Saturation
-int iHighS = 255;
-int iLowV = 55; // value
-int iHighV = 255;
 
 const std::string robotIp("153.90.197.249");
 
