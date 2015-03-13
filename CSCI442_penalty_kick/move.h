@@ -14,12 +14,14 @@
 extern AL::ALVideoDeviceProxy camProxy;
 extern AL::ALMotionProxy motion;
 extern AL::ALRobotPostureProxy pose;
+extern AL::ALNavigationProxy navigate;
 
 extern const std::string clientName;
 
 void robot_init();
 void move_to_ball();
 void robot_cleanup();
+cv::Point normalize_velocity(cv::Point cam);
 
 #endif	/* MOVE_H */
 

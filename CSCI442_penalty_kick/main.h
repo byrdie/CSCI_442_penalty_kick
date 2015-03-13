@@ -25,6 +25,7 @@
 #include <alproxies/alledsproxy.h>
 #include <alproxies/almotionproxy.h>
 #include <alproxies/alrobotpostureproxy.h>
+#include <alproxies/alnavigationproxy.h>
 
 // Opencv includes.
 #include <opencv2/core/core.hpp>
@@ -33,6 +34,10 @@
 
 /*Custom includes*/
 #include "move.h"
+
+/*Preporcessor definitions*/
+#define HOR_RES 320
+#define VER_RES 240
 
 using namespace std;
 using namespace AL;

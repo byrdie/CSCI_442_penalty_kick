@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
  */
 void ball_track(const std::string& robotIp) {
     /** Create an cv::Mat header to wrap into an opencv image.*/
-    Mat img = Mat(cv::Size(320, 240), CV_8UC3);
+    Mat img = Mat(cv::Size(HOR_RES, VER_RES), CV_8UC3);
 
     /** Create a proxy to ALVideoDevice on the robot.*/
     ALVideoDeviceProxy camProxy(robotIp, 9559);
