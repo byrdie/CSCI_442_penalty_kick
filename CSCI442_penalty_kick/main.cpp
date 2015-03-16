@@ -8,6 +8,7 @@
 
 #include "main.h"
 #include "move.h"
+void detect_notebook(Mat img);
 
 /*HSV values for the YELLOW tennis ball*/;
 int iLowH = 19; // Hue
@@ -20,23 +21,23 @@ int iHighV = 255;
 int main(int argc, char* argv[]) {
 
     std::cout << "OpenCV version: " << CV_VERSION << std::endl;
-
+    Mat img = Mat(cv::Size(320, 240), CV_8UC3);
 
     try {
         //        ball_track(robotIp);
 
         robot_init();
-
-        move_to_ball();
+        //move_to_ball();
+        detect_notebook(img);
 
         robot_cleanup();
-
 
 
     } catch (const AL::ALError& e) {
         std::cerr << "Caught exception " << e.what() << std::endl;
     }
 
+    //motion.moveTo(0, .2, 0);
 
     return 0;
 }
@@ -294,4 +295,53 @@ Point find_ball(Mat img) {
     }
 
     return next_traject;
+}
+
+void detect_notebook(Mat img) {
+
+    /*allocate image buffers*/
+    cv::Mat bw = cv::Mat(cv::Size(320, 240), CV_8UC3);
+    cv::Mat canny = cv::Mat(bw.size(), CV_8UC3);
+    cv::Mat hsv = cv::Mat(bw.size(), CV_8UC3);
+    cv::Mat weightedFrame = cv::Mat(bw.size(), CV_32FC3);
+    
+    while ((char) cv::waitKey(30) != 27) {
+        /* Retrieve an image from the camera. */
+        ALValue image = camProxy.getImageRemote(clientName);
+
+        /** Access the image buffer (6th field) and assign it to the opencv image container. */
+        img.data = (uchar*) image[6].GetBinary();
+
+        /** Tells to ALVideoDevice that it can give back the image buffer to the
+         * driver. Optional after a getImageRemote but MANDATORY after a getImageLocal.*/
+        camProxy.releaseImage(clientName);
+
+        /*blur frame and take average*/
+        cv::GaussianBlur(img, weightedFrame, Size(5, 5), 0, 0);
+        cv::accumulateWeighted(weightedFrame, weightedFrame, 0.80);
+        cv::convertScaleAbs(weightedFrame, weightedFrame, 1.0, 0.0);
+
+        /*convert BGR to HSV*/
+        cvtColor(weightedFrame, hsv, CV_BGR2HSV);
+        /*Threshold image for color detection*/
+        Mat thresh;
+        inRange(hsv, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), thresh); //Threshold the image
+
+        /*morphological opening, removes small objects from the foreground*/
+        erode(thresh, thresh, getStructuringElement(MORPH_ELLIPSE, Size(10, 10)));
+        dilate(thresh, thresh, getStructuringElement(MORPH_ELLIPSE, Size(10, 10)));
+
+        /*morphological closing, removes small holes from foreground*/
+        dilate(thresh, thresh, getStructuringElement(MORPH_ELLIPSE, Size(10, 10)));
+        erode(thresh, thresh, getStructuringElement(MORPH_ELLIPSE, Size(10, 10)));
+        
+        cvtColor(bw, bw, CV_BGR2HSV);
+        cv::Canny(bw, canny, 10, 350);
+
+        cv::namedWindow("Image");
+        cv::imshow("Image", canny);
+
+
+    }
+    camProxy.unsubscribe(clientName);
 }
