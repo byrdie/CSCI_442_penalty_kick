@@ -259,11 +259,14 @@ Point find_ball(Mat img) {
 
     /*If the area is greater than a thousand, we'll say the image contains an object to track*/
     Point com;
-    if (dA > 1000) {
+    if (dA > 300) {
 
         /*calculate position of the ball*/
         com.x = dM10 / dA;
         com.y = dM01 / dA;
+
+        circle(img, com, 3, Scalar(255, 255, 0), -1, 8, 0);
+
     } else {
         //            continue;
     }
@@ -277,7 +280,7 @@ Point find_ball(Mat img) {
         int dY = hough.y - com.y;
         double dist_squared = dX * dX + dY * dY;
 
-        if (dist_squared < 20) { // 20 is the threshold value for how much disagreement there can be between houghs and center of mass
+        if (dist_squared < 50) { // 20 is the threshold value for how much disagreement there can be between houghs and center of mass
 
             /*If the two are close, set the final trajectory as the average between the two*/
             next_traject.x = com.x + dX;
@@ -285,7 +288,8 @@ Point find_ball(Mat img) {
 
         } else {
             std::cout << "Houghs and COM disagreement!" << std::endl;
-            //                continue;
+            next_traject.x = com.x;
+            next_traject.y = com.y;
         }
 
     } else {

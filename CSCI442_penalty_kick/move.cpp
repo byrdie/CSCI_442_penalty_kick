@@ -13,7 +13,7 @@ void robot_init() {
     /** Create a OpenCV window to display the images. */
     cv::namedWindow("images", CV_WINDOW_KEEPRATIO);
 
-    motion.setStiffnesses("Body", 1.0);
+    motion.setStiffnesses("Body", 0.9);
     pose.goToPosture("Stand", 0.9);
 }
 
@@ -47,11 +47,13 @@ void move_to_ball() {
         Point vel = normalize_velocity(ball_loc);
         if (ball_loc.x != 0 && ball_loc.y != 0) {
 
-            head_yaw_deg = head_yaw_deg + vel.y;
+            head_yaw_deg = head_yaw_deg + vel.y % 360;
             double head_yaw_rad = head_yaw_deg * 0.017453;
             //            if (abs(vel.y) > 0.1) {
             //                motion.setWalkTargetVelocity(0.0, vel.y, 0.0, 1.0);
             motion.setAngles("HeadYaw", head_yaw_rad, 0.5);
+//                        motion.setAngles("HeadYaw", 1.0, 0.5);
+
             //            } 
             //            else {
             //                motion.setWalkTargetVelocity(vel.x, vel.y, 0.0, 1.0);
@@ -78,7 +80,7 @@ void move_to_ball() {
 Point normalize_velocity(Point cam) {
     Point norm;
     norm.x = abs((cam.y / VER_RES) - 1.0);
-    norm.y = -1 * (2 * cam.x / HOR_RES);
+    norm.y = -1.0 * (-1.0 + (2 * cam.x / HOR_RES));
     return norm;
 }
 
@@ -89,6 +91,6 @@ void robot_cleanup() {
 
     pose.goToPosture("Crouch", 1.0);
 
-    motion.setStiffnesses("Body", 0.0);
+    motion.setStiffnesses("Body", 0.1);
 
 }
