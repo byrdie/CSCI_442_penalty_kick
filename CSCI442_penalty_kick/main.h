@@ -44,7 +44,7 @@ using namespace AL;
 using namespace cv;
 
 
-const std::string robotIp("153.90.198.220");
+const std::string robotIp("153.90.197.249");
 
 
 Point find_ball(Mat img);

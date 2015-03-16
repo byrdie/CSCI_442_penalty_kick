@@ -21,7 +21,7 @@ extern const std::string clientName;
 void robot_init();
 void move_to_ball();
 void robot_cleanup();
-cv::Point normalize_velocity(cv::Point cam);
+void normalize_velocity(cv::Point cam, double *);
 
 #endif	/* MOVE_H */
 
