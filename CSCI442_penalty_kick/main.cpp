@@ -28,6 +28,8 @@ int main(int argc, char* argv[]) {
         robot_init();
 
         move_to_ball();
+        
+        step_around_ball();
 
         robot_cleanup();
 

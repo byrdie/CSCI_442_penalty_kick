@@ -45,8 +45,6 @@ void move_to_ball() {
 
         /*find the location of the ball in image space using openCV*/
         Point ball_loc = find_ball(img);
-        double vel[2];
-        normalize_velocity(ball_loc, vel);
         if (ball_loc.x != 0 && ball_loc.y != 0) {
 
             double head_norm_x = abs((ball_loc.y / (double) VER_RES) - 1.0);
@@ -97,14 +95,19 @@ void move_to_ball() {
 
 }
 
-/*normalize and flip components, since x is forward in robot's frame*/
-void normalize_velocity(Point cam, double * norm) {
-    norm[0] = abs((cam.y / VER_RES) - 1.0);
-    //    norm.y = -1.0 * (-1.0 + (2 * cam.x / HOR_RES));
-    norm[1] = (cam.x / HOR_RES);
 
-    return;
+void step_around_ball(){
+    motion.moveTo(0.0, 1.0, PI/2);
 }
+
+/*normalize and flip components, since x is forward in robot's frame*/
+//void normalize_velocity(Point cam, double * norm) {
+//    norm[0] = abs((cam.y / VER_RES) - 1.0);
+//    //    norm.y = -1.0 * (-1.0 + (2 * cam.x / HOR_RES));
+//    norm[1] = (cam.x / HOR_RES);
+//
+//    return;
+//}
 
 /* Once we're done with everything, go into crouch position and take off stiffness*/
 void robot_cleanup() {

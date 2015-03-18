@@ -10,6 +10,8 @@
 
 #include "main.h"
 
+#define PI 3.1415
+
 /*Allocate global proxies*/
 extern AL::ALVideoDeviceProxy camProxy;
 extern AL::ALMotionProxy motion;
@@ -22,6 +24,7 @@ void robot_init();
 void move_to_ball();
 void robot_cleanup();
 void normalize_velocity(cv::Point cam, double *);
+void step_around_ball();
 
 #endif	/* MOVE_H */
 
