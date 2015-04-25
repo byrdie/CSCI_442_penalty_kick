@@ -28,9 +28,12 @@ void move_to_ball() {
     list<Point> traject;
 
     double head_yaw_deg = 0.0;
+    int count = 0;
+    int lost_count = 0;
+    int lost = 0;
 
     /** Main loop. Exit when pressing ESC.*/
-    while ((char) cv::waitKey(30) != 27) {
+    while ((char) cv::waitKey(30) != 27 || count < 100) {
 
         /* Retrieve an image from the camera. */
         ALValue image = camProxy.getImageRemote(clientName);
@@ -55,17 +58,18 @@ void move_to_ball() {
             motion.setAngles("HeadYaw", head_yaw_rad, 0.8);
 
 //            if (!motion.walkIsActive()) {
-                if (head_yaw_deg > 2.0) {
+                if (head_yaw_deg > 4.0) {
 
 //                    motion.post.moveTo(0.0, 0.05, 0.0);
-                    motion.setWalkTargetVelocity(0.0, 0.7, 0.0, 1.0);
+                    motion.setWalkTargetVelocity(0.01, 0.7, 0.0, 1.0);
 
-                } else if (head_yaw_deg < -2.0) {
+                } else if (head_yaw_deg < -4.0) {
 //                    motion.post.moveTo(0.0, -0.05, 0.0);
-                    motion.setWalkTargetVelocity(0.0, -0.7, 0.0, 1.0);
+                    motion.setWalkTargetVelocity(0.01, -0.7, 0.0, 1.0);
                 } else {
 //                    motion.post.moveTo(0.1, 0.0, 0.0);
                     motion.setWalkTargetVelocity(1.0, 0.0, 0.0, 1.0);
+                    
                 }
 //            }
 
@@ -74,16 +78,25 @@ void move_to_ball() {
             std::cout << "Y-velocity " << head_norm_y << std::endl;
             //            std::cout << "Angle = " << head_yaw_deg << std::endl;;
 
-
+            lost = 0;
 
 
         } else {
 //            motion.setAngles("HeadYaw", 0.0, 0.8);
-            motion.setWalkTargetVelocity(0.0, 0.0, 0.0, 1.0);
+            if(lost_count < 2){
+                motion.setWalkTargetVelocity(1.0, 0.0, 0.0, 1.0);
+            } else {
+                break;
+            }
+            if(!lost){
+                lost_count++;
+            }
+            lost = 1;
+            
         }
 
 
-
+        count++;
 
         cv::imshow("images", img);
 
@@ -97,7 +110,12 @@ void move_to_ball() {
 
 
 void step_around_ball(){
-    motion.moveTo(0.0, 1.0, PI/2);
+    motion.moveTo(-0.02, 0.2, 0);
+    motion.moveTo(0.29, 0.05, 0.0);
+    motion.moveTo(0.01, -0.26, 0.0);
+    motion.moveTo(-0.5, 0.0, -PI/6);
+
+    
 }
 
 /*normalize and flip components, since x is forward in robot's frame*/
