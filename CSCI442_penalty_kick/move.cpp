@@ -121,41 +121,56 @@ void kick_ball() {
     AL::ALValue names;
     AL::ALValue times;
     AL::ALValue keys;
+    AL::ALValue Tnames;
+    AL::ALValue Ttimes;
+    AL::ALValue Tkeys;
 
-    names. = "HeadPitch";
+    names = "HeadPitch";
     times = AL::ALValue::array(1.16000, 2.68000, 3.20000, 4.24000, 5.12000, 6.12000);
     keys = AL::ALValue::array(0.04363, 0.26180, 0.17453, -0.27925, -0.26180, -0.24241);
-    motion.angleInterpolation(names, keys, times, 1);
+    Tnames.arrayPush(names);
+    Ttimes.arrayPush(times);
+    Tkeys.arrayPush(keys);
 
 
     names = "HeadYaw";
     times = AL::ALValue::array(1.16000, 2.68000, 3.20000, 4.24000, 5.12000, 6.12000);
     keys = AL::ALValue::array(0.00464, -0.00149, 0.00311, -0.04905, -0.03371, -0.02459);
-    motion.angleInterpolation(names, keys, times, 1);
+    Tnames.arrayPush(names);
+    Ttimes.arrayPush(times);
+    Tkeys.arrayPush(keys);
 
 
     names = "RAnklePitch";
     times = AL::ALValue::array(1.04000, 1.76000, 2.56000, 4.12000, 5.00000, 6.00000);
     keys = AL::ALValue::array(0.03226, 0.01745, 0.01745, 0.03491, 0.03491, 0.11501);
-    motion.angleInterpolation(names, keys, times, 1);
+    Tnames.arrayPush(names);
+    Ttimes.arrayPush(times);
+    Tkeys.arrayPush(keys);
 
 
     names = "RAnkleRoll";
     times = AL::ALValue::array(1.04000, 1.76000, 2.56000, 4.12000, 5.00000, 6.00000);
     keys = AL::ALValue::array(-0.33161, -0.36652, -0.36652, -0.36652, -0.34732, 0.08433);
-    motion.angleInterpolation(names, keys, times, 1);
+    Tnames.arrayPush(names);
+    Ttimes.arrayPush(times);
+    Tkeys.arrayPush(keys);
 
 
     names = "RElbowRoll";
     times = AL::ALValue::array(1.08000, 2.60000, 3.12000, 4.16000, 5.04000, 6.04000);
     keys = AL::ALValue::array(0.74096, 1.03396, 1.36990, 1.02015, 0.70722, 0.37732);
-    motion.angleInterpolation(names, keys, times, 1);
+    Tnames.arrayPush(names);
+    Ttimes.arrayPush(times);
+    Tkeys.arrayPush(keys);
 
 
     names = "RElbowYaw";
     times = AL::ALValue::array(1.08000, 2.60000, 3.12000, 4.16000, 5.04000, 6.04000);
     keys = AL::ALValue::array(-1.15353, -0.95411, -0.90809, -1.23023, -1.55697, -1.14441);
-    motion.angleInterpolation(names, keys, times, 1);
+    Tnames.arrayPush(names);
+    Ttimes.arrayPush(times);
+    Tkeys.arrayPush(keys);
 
 
     //names="RHand"
@@ -165,37 +180,49 @@ void kick_ball() {
     names = "RHipPitch";
     times = AL::ALValue::array(1.04000, 2.56000, 3.08000, 3.36000, 4.12000, 5.00000, 6.00000);
     keys = AL::ALValue::array(0.23159, 0.10580, 0.12217, 0.08433, 0.09046, 0.19171, 0.21020);
-    motion.angleInterpolation(names, keys, times, 1);
+    Tnames.arrayPush(names);
+    Ttimes.arrayPush(times);
+    Tkeys.arrayPush(keys);
 
 
     names = "RHipRoll";
     times = AL::ALValue::array(1.04000, 2.56000, 3.08000, 3.36000, 4.12000, 5.00000, 6.00000);
     keys = AL::ALValue::array(0.34366, 0.36820, 0.36820, 0.36513, 0.36667, 0.36513, -0.10129);
-    motion.angleInterpolation(names, keys, times, 1);
+    Tnames.arrayPush(names);
+    Ttimes.arrayPush(times);
+    Tkeys.arrayPush(keys);
 
 
     names = "RHipYawPitch";
     times = AL::ALValue::array(1.04000, 2.56000, 3.08000, 3.36000, 4.12000, 5.00000, 6.00000);
     keys = AL::ALValue::array(-0.18097, -0.25307, -0.06285, -0.05058, -0.18711, -0.24386, -0.31903);
-    motion.angleInterpolation(names, keys, times, 1);
+    Tnames.arrayPush(names);
+    Ttimes.arrayPush(times);
+    Tkeys.arrayPush(keys);
 
 
     names = "RKneePitch";
     times = AL::ALValue::array(1.04000, 1.76000, 2.56000, 3.08000, 3.36000, 4.12000, 5.00000, 6.00000);
     keys = AL::ALValue::array(-0.08727, -0.08727, -0.09235, -0.07973, -0.07973, -0.07819, -0.07666, -0.09208);
-    motion.angleInterpolation(names, keys, times, 1);
+    Tnames.arrayPush(names);
+    Ttimes.arrayPush(times);
+    Tkeys.arrayPush(keys);
 
 
     names = "RShoulderPitch";
     times = AL::ALValue::array(1.08000, 2.60000, 3.12000, 4.16000, 5.04000, 6.04000);
     keys = AL::ALValue::array(1.48649, 1.35917, 1.41746, 1.59847, 1.63835, 1.50021);
-    motion.angleInterpolation(names, keys, times, 1);
+    Tnames.arrayPush(names);
+    Ttimes.arrayPush(times);
+    Tkeys.arrayPush(keys);
 
 
     names = "RShoulderRoll";
     times = AL::ALValue::array(1.08000, 2.60000, 3.12000, 4.16000, 5.04000, 6.04000);
     keys = AL::ALValue::array(-0.02305, -0.01998, -0.13197, -0.11816, -0.02305, -0.03524);
-    motion.angleInterpolation(names, keys, times, 1);
+    Tnames.arrayPush(names);
+    Ttimes.arrayPush(times);
+    Tkeys.arrayPush(keys);
 
 
     //names="RWristYaw"
@@ -205,25 +232,33 @@ void kick_ball() {
     names = "LAnklePitch";
     times = AL::ALValue::array(1.04000, 1.32000, 1.76000, 2.56000, 2.84000, 3.36000, 3.68000, 4.12000, 5.00000, 6.00000);
     keys = AL::ALValue::array(0.08727, -0.08727, -0.59341, 0.12217, -0.05236, 0.24435, -0.12217, -0.64403, -0.21991, 0.11356);
-    motion.angleInterpolation(names, keys, times, 1);
+    Tnames.arrayPush(names);
+    Ttimes.arrayPush(times);
+    Tkeys.arrayPush(keys);
 
 
     names = "LAnkleRoll";
     times = AL::ALValue::array(1.04000, 2.56000, 3.08000, 3.36000, 4.12000, 5.00000, 6.00000);
     keys = AL::ALValue::array(-0.40143, -0.10887, -0.13802, -0.00000, -0.18097, -0.34558, -0.05066);
-    motion.angleInterpolation(names, keys, times, 1);
+    Tnames.arrayPush(names);
+    Ttimes.arrayPush(times);
+    Tkeys.arrayPush(keys);
 
 
     names = "LElbowRoll";
     times = AL::ALValue::array(1.00000, 2.52000, 3.04000, 4.08000, 4.96000, 5.96000);
     keys = AL::ALValue::array(-0.64117, -1.15353, -1.38056, -1.36062, -0.96024, -0.45564);
-    motion.angleInterpolation(names, keys, times, 1);
+    Tnames.arrayPush(names);
+    Ttimes.arrayPush(times);
+    Tkeys.arrayPush(keys);
 
 
     names = "LElbowYaw";
     times = AL::ALValue::array(1.00000, 2.52000, 3.04000, 4.08000, 4.96000, 5.96000);
     keys = AL::ALValue::array(0.99714, 0.86368, 0.90970, 0.63205, 0.84834, 1.49714);
-    motion.angleInterpolation(names, keys, times, 1);
+    Tnames.arrayPush(names);
+    Ttimes.arrayPush(times);
+    Tkeys.arrayPush(keys);
 
 
     //names="LHand"
@@ -233,35 +268,47 @@ void kick_ball() {
     names = "LHipPitch";
     times = AL::ALValue::array(1.04000, 2.56000, 3.08000, 3.36000, 4.12000, 5.00000, 6.00000);
     keys = AL::ALValue::array(0.16265, -0.39726, -1.11876, -1.11978, -0.78540, -0.29142, 0.21318);
-    motion.angleInterpolation(names, keys, times, 1);
+    Tnames.arrayPush(names);
+    Ttimes.arrayPush(times);
+    Tkeys.arrayPush(keys);
 
 
     names = "LHipRoll";
     times = AL::ALValue::array(1.04000, 2.56000, 3.08000, 3.36000, 4.12000, 5.00000, 6.00000);
     keys = AL::ALValue::array(0.47124, 0.54001, 0.32218, 0.12276, 0.36360, 0.41713, 0.05825);
-    motion.angleInterpolation(names, keys, times, 1);
+    Tnames.arrayPush(names);
+    Ttimes.arrayPush(times);
+    Tkeys.arrayPush(keys);
 
 
     names = "LKneePitch";
     times = AL::ALValue::array(1.04000, 2.56000, 2.84000, 3.08000, 3.36000, 4.12000, 5.00000, 6.00000);
     keys = AL::ALValue::array(-0.08901, 1.97575, 1.97222, 1.23918, 0.24435, 1.53589, 0.62430, -0.07666);
-    motion.angleInterpolation(names, keys, times, 1);
+    Tnames.arrayPush(names);
+    Ttimes.arrayPush(times);
+    Tkeys.arrayPush(keys);
 
 
     names = "LShoulderPitch";
     times = AL::ALValue::array(1.00000, 2.52000, 3.04000, 4.08000, 4.96000, 5.96000);
     keys = AL::ALValue::array(1.52782, 1.46033, 1.47413, 1.24096, 1.51862, 1.54938);
-    motion.angleInterpolation(names, keys, times, 1);
+    Tnames.arrayPush(names);
+    Ttimes.arrayPush(times);
+    Tkeys.arrayPush(keys);
 
 
     names = "LShoulderRoll";
     times = AL::ALValue::array(1.00000, 2.52000, 3.04000, 4.08000, 4.96000, 5.96000);
     keys = AL::ALValue::array(0.12268, 0.04138, 0.14569, 0.13955, 0.14722, 0.03993);
+    Tnames.arrayPush(names);
+    Ttimes.arrayPush(times);
+    Tkeys.arrayPush(keys);
+
     //names.push_back("LWristYaw")
     //times.push_back([ 1.00000, 2.52000, 3.04000, 4.08000, 4.96000, 5.96000])
     //keys.push_back([ -0.08727, -0.07359, -0.05058, -0.06285, 0.05680, 0.00149])
-
-    motion.angleInterpolation(names, keys, times, 1);
+    pose.goToPosture("Stand", 0.9);
+    motion.angleInterpolation(Tnames, Tkeys, Ttimes, true);
 
 }
 
