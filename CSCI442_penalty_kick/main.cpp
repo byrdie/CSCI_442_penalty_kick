@@ -29,9 +29,10 @@ int main(int argc, char* argv[]) {
 
 //       
         
-        step_around_ball();
-        
-         move_to_ball();
+//        step_around_ball();
+//        
+//        move_to_ball();
+        kick_ball();
         robot_cleanup();
 
 
