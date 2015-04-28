@@ -122,7 +122,7 @@ void kick_ball() {
     AL::ALValue times;
     AL::ALValue keys;
 
-    names. = "HeadPitch";
+    names = "HeadPitch";
     times = AL::ALValue::array(1.16000, 2.68000, 3.20000, 4.24000, 5.12000, 6.12000);
     keys = AL::ALValue::array(0.04363, 0.26180, 0.17453, -0.27925, -0.26180, -0.24241);
     motion.angleInterpolation(names, keys, times, 1);
