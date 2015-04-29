@@ -32,7 +32,11 @@ int main(int argc, char* argv[]) {
         step_around_ball();
         
         move_to_ball();
-        kick_ball();
+        kick_ball_left();
+        move_forward();
+        move_to_ball();
+        kick_ball_left();
+        
         robot_cleanup();
 
 

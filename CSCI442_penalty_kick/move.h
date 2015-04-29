@@ -25,7 +25,9 @@ void move_to_ball();
 void robot_cleanup();
 void normalize_velocity(cv::Point cam, double *);
 void step_around_ball();
-void kick_ball();
+void kick_ball_left();
+void move_forward();
+
 
 #endif	/* MOVE_H */
 

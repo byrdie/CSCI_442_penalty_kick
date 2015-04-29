@@ -83,7 +83,7 @@ void move_to_ball() {
 
         } else {
             //            motion.setAngles("HeadYaw", 0.0, 0.8);
-            if (lost_count < 2) {
+            if (lost_count < 3) {
                 motion.setWalkTargetVelocity(1.0, 0.0, 0.0, 1.0);
             } else {
                 break;
@@ -109,15 +109,24 @@ void move_to_ball() {
 }
 
 void step_around_ball() {
-    motion.moveTo(-0.02, 0.2, 0);
-    motion.moveTo(0.29, 0.05, 0.0);
-    motion.moveTo(0.01, -0.26, 0.0);
-    motion.moveTo(-0.5, 0.0, -PI / 6);
+    motion.moveTo(-0.02, -0.2, 0.0);
+    motion.moveTo(0.23, 0.05, PI/12);
+//    motion.moveTo(0.01, 0.25, 0.0);
+    motion.setWalkTargetVelocity(0.0, 0.2, 0.0, 1.0);
+    usleep(12000000);
+    motion.moveTo(-0.4, 0.0, -PI/6);
+    motion.moveTo(0.0, 0.2, PI/50);
 
 
 }
 
-void kick_ball() {
+void move_forward(){
+    motion.moveTo(0.0, 0.1, 0.0);
+    motion.moveTo(0.4, 0.0, 0.0);
+    motion.moveTo(0.0, -0.3, 0.0);
+}
+
+void kick_ball_left() {
     AL::ALValue names;
     AL::ALValue times;
     AL::ALValue keys;
@@ -307,6 +316,7 @@ void kick_ball() {
     //names.push_back("LWristYaw")
     //times.push_back([ 1.00000, 2.52000, 3.04000, 4.08000, 4.96000, 5.96000])
     //keys.push_back([ -0.08727, -0.07359, -0.05058, -0.06285, 0.05680, 0.00149])
+    motion.moveTo(0.0, -0.033, 0.0);
     pose.goToPosture("Stand", 0.9);
     motion.angleInterpolation(Tnames, Tkeys, Ttimes, true);
 
