@@ -14,7 +14,7 @@ void robot_init() {
     cv::namedWindow("images", CV_WINDOW_KEEPRATIO);
 
     motion.setStiffnesses("Body", 0.9);
-    pose.goToPosture("Stand", 0.9);
+    pose.goToPosture("Stand", 0.8);
     motion.setAngles("HeadPitch", 0.05, 0.9);
 }
 
@@ -68,7 +68,7 @@ void move_to_ball() {
                 motion.setWalkTargetVelocity(0.01, -0.7, 0.0, 1.0);
             } else {
                 //                    motion.post.moveTo(0.1, 0.0, 0.0);
-                motion.setWalkTargetVelocity(1.0, 0.0, 0.0, 1.0);
+                motion.setWalkTargetVelocity(0.7, 0.0, 0.0, 1.0);
 
             }
             //            }
@@ -84,7 +84,7 @@ void move_to_ball() {
         } else {
             //            motion.setAngles("HeadYaw", 0.0, 0.8);
             if (lost_count < 3) {
-                motion.setWalkTargetVelocity(1.0, 0.0, 0.0, 1.0);
+                motion.setWalkTargetVelocity(0.1, 0.0, 0.0, 1.0);
             } else {
                 break;
             }
@@ -109,13 +109,13 @@ void move_to_ball() {
 }
 
 void step_around_ball() {
-    motion.moveTo(-0.02, -0.2, 0.0);
-    motion.moveTo(0.23, 0.05, PI/12);
+    motion.moveTo(0.0, -0.2, 0.0);
+    motion.moveTo(0.10, 0.0, -PI/6);
 //    motion.moveTo(0.01, 0.25, 0.0);
-    motion.setWalkTargetVelocity(0.0, 0.2, 0.0, 1.0);
-    usleep(12000000);
-    motion.moveTo(-0.4, 0.0, -PI/6);
-    motion.moveTo(0.0, 0.2, PI/50);
+    motion.setWalkTargetVelocity(-0.05, 0.2, 0.0, 1.0);
+    usleep(26000000);
+    motion.moveTo(-0.5, 0.1, 0.0);
+//    motion.moveTo(0.0, 0.2, 0.0);
 
 
 }

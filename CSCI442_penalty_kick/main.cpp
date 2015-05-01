@@ -33,9 +33,9 @@ int main(int argc, char* argv[]) {
         
         move_to_ball();
         kick_ball_left();
-        move_forward();
-        move_to_ball();
-        kick_ball_left();
+//        move_forward();
+//        move_to_ball();
+//        kick_ball_left();
         
         robot_cleanup();
 
